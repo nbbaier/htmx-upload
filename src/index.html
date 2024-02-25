@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <title>Document</title>
+  </head>
+  <body>
+    <h1>Title of the a</h1>
+
+    <form id="form" hx-encoding="multipart/form-data" hx-post="/upload">
+      <input
+        type="file"
+        class="upload"
+        name="file"
+        accept=".json, .csv"
+        onchange="checkFileChosen();"
+      />
+      <button id="submit" disabled>Upload</button>
+      <progress id="progress" value="0" max="100"></progress>
+    </form>
+    <script>
+      function checkFileChosen() {
+        const input = document.querySelector(".upload");
+        const btn = document.getElementById("submit");
+
+        if (input.files.length > 0) {
+          btn.removeAttribute("disabled");
+        } else {
+          btn.setAttribute("disabled", true);
+        }
+      }
+
+      htmx.on("#form", "htmx:xhr:progress", function (evt) {
+        htmx
+          .find("#progress")
+          .setAttribute("value", (evt.detail.loaded / evt.detail.total) * 100);
+      });
+    </script>
+  </body>
+</html>
